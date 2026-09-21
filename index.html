@@ -30,21 +30,26 @@
             const grid = document.getElementById("grid-locales");
             grid.innerHTML = "";
 
+            // Lee tanto los datos predeterminados como los guardados en memoria
             const baseDeDatos = JSON.parse(localStorage.getItem("bulevarRestaurantes")) || bulevarData;
 
             Object.values(baseDeDatos).forEach(local => {
-                let logoHTML = local.logo && local.logo.startsWith('http')
-                    ? `<img src="${local.logo}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='🍽️'">`
-                    : (local.logo || '🍽️');
+                // Validación inteligente para mostrar imágenes subidas o emojis/texto
+                let logoHTML = "";
+                if (local.logo && (local.logo.startsWith('data:image') || local.logo.startsWith('http'))) {
+                    logoHTML = `<img src="${local.logo}" class="w-full h-full object-cover">`;
+                } else {
+                    logoHTML = `<span class="text-4xl">${local.logo || '🍽️'}</span>`;
+                }
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition flex flex-col justify-between">
                         <div>
-                            <div class="bg-amber-100 h-32 flex items-center justify-center text-4xl overflow-hidden relative">
+                            <div class="bg-amber-100 h-32 flex items-center justify-center overflow-hidden relative">
                                 ${logoHTML}
                             </div>
                             <div class="p-5">
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-700">${local.categoria}</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-700">${local.categoria || 'Gastronomía'}</span>
                                 <h3 class="text-xl font-bold text-gray-900 mt-1">${local.nombre}</h3>
                                 <p class="text-xs text-gray-500 mt-1">📱 Pedidos directos a WhatsApp</p>
                             </div>
