@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulevar Gastronómico - Mall Virtual</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    
+    <header class="bg-amber-700 text-white shadow-md py-8 px-4 text-center relative">
+        <a href="admin.html" class="absolute top-4 right-4 bg-amber-800 hover:bg-amber-900 text-amber-100 text-xs px-3 py-1.5 rounded-lg font-medium transition">
+            ⚙️ Panel Admin
+        </a>
+        <h1 class="text-3xl font-bold">🏛️ Bulevar Gastronómico</h1>
+        <p class="text-amber-100 mt-2">Explora los restaurantes, escanea tu mesa y pide directo al WhatsApp.</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4 my-6">
+        <h2 class="text-xl font-semibold mb-6 text-gray-700">Nuestros Locales</h2>
+        
+        <div id="grid-locales" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Se llena con JavaScript -->
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("grid-locales");
+            grid.innerHTML = "";
+
+            const baseDeDatos = JSON.parse(localStorage.getItem("bulevarRestaurantes")) || bulevarData;
+
+            Object.values(baseDeDatos).forEach(local => {
+                let logoHTML = local.logo && local.logo.startsWith('http')
+                    ? `<img src="${local.logo}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='🍽️'">`
+                    : (local.logo || '🍽️');
+
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition flex flex-col justify-between">
+                        <div>
+                            <div class="bg-amber-100 h-32 flex items-center justify-center text-4xl overflow-hidden relative">
+                                ${logoHTML}
+                            </div>
+                            <div class="p-5">
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-700">${local.categoria}</span>
+                                <h3 class="text-xl font-bold text-gray-900 mt-1">${local.nombre}</h3>
+                                <p class="text-xs text-gray-500 mt-1">📱 Pedidos directos a WhatsApp</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <a href="restaurante.html?local=${local.id}" class="block text-center bg-gray-900 hover:bg-gray-800 text-white py-2.5 rounded-xl font-medium text-sm transition">
+                                Ver Menú y Pedir
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
